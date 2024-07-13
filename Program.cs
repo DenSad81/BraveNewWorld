@@ -42,7 +42,7 @@ class Program
             Console.SetCursorPosition(0, tempPositionForPrintText++);
 
             ChangeDirectionOfMovingPacman(directionPacman, MoveUpCommand, MoveDownCommand, MoveRightCommand, MoveLeftCommand);
-            MoveHero(map, positionPacman, directionPacman, signBorderInMap, signPacman, signEmpty);
+            MovePacman(map, positionPacman, directionPacman, signBorderInMap, signPacman, signEmpty);
             quantityCollectedPoints += CollectPoint(map, positionPacman, signPoint, signEmpty);
             isGameRun = IsGameExit(ExitCommand);
 
@@ -61,52 +61,40 @@ class Program
         return 0;
     }
 
-    static void ChangeDirectionOfMovingPacman(int[] directionPacman, ConsoleKey Up, ConsoleKey Down, ConsoleKey Right, ConsoleKey Left)
+    static void ChangeDirectionOfMovingPacman(int[] directionPacman, ConsoleKey up, ConsoleKey down, ConsoleKey right, ConsoleKey left)
     {
         if (Console.KeyAvailable)
         {
             ConsoleKeyInfo pushKey = Console.ReadKey(true);
 
-            // directionPacman[0] = 0; //если сделать так, то при нажатии любой клавиши,
-            // directionPacman[1] = 0; //отличной от Up, Down, Right, Left пакмен будет останавливаться
+            directionPacman[0] = 0;
+            directionPacman[1] = 0;
 
-            if (pushKey.Key == Up)
-            {
+            if (pushKey.Key == up)
                 directionPacman[0] = -1;
-                directionPacman[1] = 0;// directionPacman[1] = 0;
-            }
-            else if (pushKey.Key == Down)
-            {
+            else if (pushKey.Key == down)
                 directionPacman[0] = 1;
-                directionPacman[1] = 0;// directionPacman[1] = 0;
-            }
-            else if (pushKey.Key == Right)
-            {
-                directionPacman[0] = 0;// directionPacman[0] = 0;
+            else if (pushKey.Key == right)
                 directionPacman[1] = 1;
-            }
-            else if (pushKey.Key == Left)
-            {
-                directionPacman[0] = 0;// directionPacman[0] = 0;
+            else if (pushKey.Key == left)
                 directionPacman[1] = -1;
-            }
         }
     }
 
-    static bool IsGameExit(ConsoleKey Exit)
+    static bool IsGameExit(ConsoleKey exit)
     {
         if (Console.KeyAvailable)
         {
             ConsoleKeyInfo pushKey = Console.ReadKey(true);
 
-            if (pushKey.Key == Exit)
+            if (pushKey.Key == exit)
                 return false;
         }
 
         return true;
     }
 
-    static void MoveHero(char[,] map, int[] positionPacman, int[] directionPacman, char symbolBorderInMap, char signHero, char signEmpty)
+    static void MovePacman(char[,] map, int[] positionPacman, int[] directionPacman, char symbolBorderInMap, char signPacman, char signEmpty)
     {
 
         if (map[positionPacman[0] + directionPacman[0], positionPacman[1] + directionPacman[1]] != symbolBorderInMap)
@@ -119,7 +107,7 @@ class Program
         }
 
         Console.SetCursorPosition(positionPacman[1], positionPacman[0]);
-        Console.Write(signHero);
+        Console.Write(signPacman);
     }
 
     static void ConvertMap(string[] oneDemensionalArray, char[,] dubleDemensionalArray)
