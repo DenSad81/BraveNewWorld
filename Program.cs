@@ -5,10 +5,16 @@ class Program
 {
     static void Main(string[] args)
     {
+        const ConsoleKey Up = ConsoleKey.UpArrow;
+        const ConsoleKey Down = ConsoleKey.DownArrow;
+        const ConsoleKey Left = ConsoleKey.LeftArrow;
+        const ConsoleKey Right = ConsoleKey.RightArrow;
+        const ConsoleKey Exit = ConsoleKey.Escape;
+
         string[] mapOneDemensionalArray = File.ReadAllLines("map.txt");
         char[,] map = new char[mapOneDemensionalArray.Length, mapOneDemensionalArray[0].Length];
-        int[] positionPacmanXY = new int[] { 0, 0 };
-        int[] directionPacmanXY = new int[] { 0, 0 };
+        int[] positionPacman = new int[] { 0, 0 };
+        int[] directionPacman = new int[] { 0, 0 };
         char signPacman = '@';
         bool isGameRun = true;
         int quantityPoints = 0;
@@ -18,7 +24,7 @@ class Program
         ConvertMap(mapOneDemensionalArray, map);
         char signBorderInMap = map[0, 0];
         int positionForPrintText = map.GetLength(0);
-        positionPacmanXY = GetPositionOfHero(map, signPacman);
+        positionPacman = GetPositionOfHero(map, signPacman);
         FillMapOfPoint(map, ref quantityPoints);
         PrintMap(map);
 
@@ -33,10 +39,10 @@ class Program
             Console.WriteLine($"Pacman {signPacman} собрал точек: {quantityCollectedPoints}");
             Console.SetCursorPosition(0, tempPositionForPrintText++);
 
-            ChangeDirectionOfMovingPacman(directionPacmanXY);
-            MoveHero(map, positionPacmanXY, directionPacmanXY, signBorderInMap, signPacman);
-            quantityCollectedPoints += CollectPoint(map, positionPacmanXY);
-            isGameRun = IsGameExit();
+            ChangeDirectionOfMovingPacman(directionPacman, Up, Down, Right, Left);
+            MoveHero(map, positionPacman, directionPacman, signBorderInMap, signPacman);
+            quantityCollectedPoints += CollectPoint(map, positionPacman);
+            isGameRun = IsGameExit(Exit);
 
             System.Threading.Thread.Sleep(200);
         }
@@ -53,63 +59,61 @@ class Program
         return 0;
     }
 
-    static void ChangeDirectionOfMovingPacman(int[] directionPacmanXY)
+    static void ChangeDirectionOfMovingPacman(int[] directionPacmanXY, ConsoleKey Up, ConsoleKey Down, ConsoleKey Right, ConsoleKey Left)
     {
         if (Console.KeyAvailable)
         {
             ConsoleKeyInfo pushKey = Console.ReadKey(true);
 
-            switch (pushKey.Key)
+            if (pushKey.Key == Up)
             {
-                case ConsoleKey.UpArrow:
-                    directionPacmanXY[0] = -1;
-                    directionPacmanXY[1] = 0;
-                    break;
-
-                case ConsoleKey.DownArrow:
-                    directionPacmanXY[0] = 1;
-                    directionPacmanXY[1] = 0;
-                    break;
-
-                case ConsoleKey.RightArrow:
-                    directionPacmanXY[0] = 0;
-                    directionPacmanXY[1] = 1;
-                    break;
-
-                case ConsoleKey.LeftArrow:
-                    directionPacmanXY[0] = 0;
-                    directionPacmanXY[1] = -1;
-                    break;
+                directionPacmanXY[0] = -1;
+                directionPacmanXY[1] = 0;
+            }
+            else if (pushKey.Key == Down)
+            {
+                directionPacmanXY[0] = 1;
+                directionPacmanXY[1] = 0;
+            }
+            else if (pushKey.Key == Right)
+            {
+                directionPacmanXY[0] = 0;
+                directionPacmanXY[1] = 1;
+            }
+            else if (pushKey.Key == Left)
+            {
+                directionPacmanXY[0] = 0;
+                directionPacmanXY[1] = -1;
             }
         }
     }
 
-    static bool IsGameExit()
+    static bool IsGameExit(ConsoleKey Exit)
     {
         if (Console.KeyAvailable)
         {
             ConsoleKeyInfo pushKey = Console.ReadKey(true);
 
-            if (pushKey.Key == ConsoleKey.Escape)
+            if (pushKey.Key == Exit)
                 return false;
         }
 
         return true;
     }
 
-    static void MoveHero(char[,] map, int[] posPacmanXY, int[] dirPacmanXY, char symbolBorderInMap, char signHero)
+    static void MoveHero(char[,] map, int[] positionPacman, int[] directionPacman, char symbolBorderInMap, char signHero)
     {
 
-        if (map[posPacmanXY[0] + dirPacmanXY[0], posPacmanXY[1] + dirPacmanXY[1]] != symbolBorderInMap)
+        if (map[positionPacman[0] + directionPacman[0], positionPacman[1] + directionPacman[1]] != symbolBorderInMap)
         {
-            Console.SetCursorPosition(posPacmanXY[1], posPacmanXY[0]);
+            Console.SetCursorPosition(positionPacman[1], positionPacman[0]);
             Console.Write(' ');
 
-            posPacmanXY[0] += dirPacmanXY[0];
-            posPacmanXY[1] += dirPacmanXY[1];
+            positionPacman[0] += directionPacman[0];
+            positionPacman[1] += directionPacman[1];
         }
 
-        Console.SetCursorPosition(posPacmanXY[1], posPacmanXY[0]);
+        Console.SetCursorPosition(positionPacman[1], positionPacman[0]);
         Console.Write(signHero);
     }
 
@@ -150,7 +154,7 @@ class Program
 
     static int[] GetPositionOfHero(char[,] doobleDemensionalArray, char symbol)
     {
-        int[] posPacmanXY = new int[2];
+        int[] positionPacman = new int[2];
 
         for (int i = 0; i < doobleDemensionalArray.GetLength(0); i++)
         {
@@ -158,12 +162,12 @@ class Program
             {
                 if ((doobleDemensionalArray[i, j]) == symbol)
                 {
-                    posPacmanXY[0] = i;
-                    posPacmanXY[1] = j;
+                    positionPacman[0] = i;
+                    positionPacman[1] = j;
                 }
             }
         }
 
-        return posPacmanXY;
+        return positionPacman;
     }
 }
