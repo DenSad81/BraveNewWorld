@@ -27,7 +27,7 @@ class Program
         char signBorderInMap = map[0, 0];
         int positionForPrintText = map.GetLength(0);
         positionPacman = GetPositionOfPacman(map, signPacman);
-        FillMapOfPoints(map, ref quantityPoints);
+        FillMapOfPoints(map, ref quantityPoints, signPoint, signEmpty);
         PrintMap(map);
 
         while (isGameRun)
@@ -67,17 +67,29 @@ class Program
         {
             ConsoleKeyInfo pushKey = Console.ReadKey(true);
 
-            directionPacman[0] = 0;
-            directionPacman[1] = 0;
-
             if (pushKey.Key == up)
+            {
                 directionPacman[0] = -1;
+                directionPacman[1] = 0;
+            }
+
             else if (pushKey.Key == down)
+            {
                 directionPacman[0] = 1;
+                directionPacman[1] = 0;
+            }
+
             else if (pushKey.Key == right)
+            {
+                directionPacman[0] = 0;
                 directionPacman[1] = 1;
+            }
+
             else if (pushKey.Key == left)
+            {
+                directionPacman[0] = 0;
                 directionPacman[1] = -1;
+            }
         }
     }
 
@@ -96,7 +108,6 @@ class Program
 
     static void MovePacman(char[,] map, int[] positionPacman, int[] directionPacman, char symbolBorderInMap, char signPacman, char signEmpty)
     {
-
         if (map[positionPacman[0] + directionPacman[0], positionPacman[1] + directionPacman[1]] != symbolBorderInMap)
         {
             Console.SetCursorPosition(positionPacman[1], positionPacman[0]);
@@ -130,15 +141,15 @@ class Program
         }
     }
 
-    static void FillMapOfPoints(char[,] doobleDemensionalArray, ref int quantityPoint)
+    static void FillMapOfPoints(char[,] doobleDemensionalArray, ref int quantityPoint, char signPoint, char signEmpty)
     {
         for (int i = 0; i < doobleDemensionalArray.GetLength(0); i++)
         {
             for (int j = 0; j < doobleDemensionalArray.GetLength(1); j++)
             {
-                if (doobleDemensionalArray[i, j] == ' ')
+                if (doobleDemensionalArray[i, j] == signEmpty)
                 {
-                    doobleDemensionalArray[i, j] = '.';
+                    doobleDemensionalArray[i, j] = signPoint;
                     quantityPoint++;
                 }
             }
